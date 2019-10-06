@@ -15,6 +15,12 @@ var addToCart = ((req,res)=>{
                     if(req.body.action==3){
                         var id = data._id
                         cart.findByIdAndRemove(id).then((doc)=>{
+                            var updatedQuantity    = parseInt(proData.quantity)+parseInt(data.quantity);
+                            var detail      = {
+                                quantity    : updatedQuantity
+                            }
+                            product.findOneAndUpdate({_id: req.body.productId},detail).then((response)=>{})
+
                             // console.log('DOOOOOOOOOOOOOOOOO',doc);
                             return res.json({
                                 status: true, 
@@ -24,8 +30,27 @@ var addToCart = ((req,res)=>{
                         })
                     }else{
                         if(req.body.action==1){
-                            var totalQuantity= parseInt(quantity)+parseInt(req.body.quantity);
+                            if(proData.quantity>=1){
+                                var totalQuantity= parseInt(quantity)+parseInt(req.body.quantity);
+                                var updatedQuantity    = parseInt(proData.quantity)-parseInt(req.body.quantity);
+                                var detail      = {
+                                    quantity    : updatedQuantity
+                                }
+                                product.findOneAndUpdate({_id: req.body.productId},detail).then((response)=>{})
+                            }else{
+                                return res.json({
+                                    status: true, 
+                                    message: 'Out of stock.',
+                                    code : 103,
+                                    data: [] 
+                                });
+                            }
                         }else{
+                            var updatedQuantity    = parseInt(proData.quantity)+parseInt(req.body.quantity);
+                            var detail      = {
+                                quantity    : updatedQuantity
+                            }
+                            product.findOneAndUpdate({_id: req.body.productId},detail).then((response)=>{})
                             var totalQuantity= parseInt(quantity)-parseInt(req.body.quantity);
                         }
                         
@@ -52,34 +77,52 @@ var addToCart = ((req,res)=>{
                     }
                     
                 }else{
-                    var price       = req.body.price;
-                    var discount    = (price*req.body.discount)/100;
-                    var amount      = price-discount;
-                    var quantity    = req.body.quantity;
-                    var userCart    = new cart({
-                            userId          : req.body.userId,
-                            productId       : req.body.productId,
-                            vendorId        : proData['userId'],
-                            price           : price,
-                            discount        : discount,
-                            amount          : amount,
-                            quantity        : quantity,
-                            total           : quantity*amount,
-                            createdAt       : new Date(),
-                    });
-                    
-                    userCart.save((error,saved)=>{
-                        console.log('saved',userCart);
-                        if(error){
-                            return res.json({status: false, message: 'Some error found.',code : 101});
-                        }else {
+                    product.findOne({_id: req.body.productId}).then((proData)=>{
+                        console.log('proDataproDataproDataproData',proData)
+                        if(proData.quantity>=1){
+                            var price       = req.body.price;
+                            var discount    = (price*req.body.discount)/100;
+                            var amount      = price-discount;
+                            var quantity    = req.body.quantity;
+                            var userCart    = new cart({
+                                    userId          : req.body.userId,
+                                    productId       : req.body.productId,
+                                    vendorId        : proData['userId'],
+                                    price           : price,
+                                    discount        : discount,
+                                    amount          : amount,
+                                    quantity        : quantity,
+                                    total           : quantity*amount,
+                                    createdAt       : new Date(),
+                            });
+                            
+                            userCart.save((error,saved)=>{
+                                console.log('saved',userCart);
+                                if(error){
+                                    return res.json({status: false, message: 'Some error found.',code : 101});
+                                }else {
+                                    var updatedQuantity    = proData.quantity-quantity;
+                                    var detail      = {
+                                        quantity    : updatedQuantity
+                                    }
+                                    product.findOneAndUpdate({_id: req.body.productId},detail).then((response)=>{})
+                                    return res.json({
+                                        status: true, 
+                                        message: 'Item successfully added in cart.',
+                                        code : 100,
+                                        data: proData
+                                    });
+                                }
+                            })
+                        }else{
                             return res.json({
                                 status: true, 
-                                message: 'Item successfully added in cart.',
-                                code : 100,
+                                message: 'Out of stock.',
+                                code : 103,
                                 data: [] 
                             });
                         }
+                            
                     })
                 }
             })

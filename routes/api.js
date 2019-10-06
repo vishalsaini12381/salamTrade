@@ -5,6 +5,7 @@ var JWTSECRET = 'shivendra123'
 // Admin
 var adminSign = require('../api/controller/adminController/controller/adminLogin');
 var adminVendor = require('../api/controller/adminController/controller/fetchVendorList');
+var adminUser = require('../api/controller/adminController/controller/adminUser');
 var adminProduct = require('../api/controller/adminController/controller/fetchProductList');
 var adminBusiness = require('../api/controller/adminController/controller/businessCategory');
 var adminCategory = require('../api/controller/adminController/controller/category');
@@ -113,6 +114,9 @@ router.post('/admin/vendorList',adminVendor.vendorList);
 router.post('/admin/fetchVendorList',adminVendor.fetchVendorList);
 router.post('/admin/editVendorList',adminVendor.editVendorList);
 router.post('/admin/deleteVendor',adminVendor.deleteVendor);
+
+router.post('/admin/userList',adminUser.userList);
+
 
 //
 router.post('/admin/productList',adminProduct.productList);

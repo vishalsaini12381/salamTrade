@@ -115,7 +115,7 @@ var registerVendor = ((req,res)=>{
                         if(err){
                             return res.json({status: false, message: "Error Registering the user details"});
                         }else{
-                            return res.json({status: true, message: "User SuccessFully saved, Please verify Your Account Link Sent on Your given E-mail Address"});
+                            return res.json({status: true, message: "Registration successfully"});
                         }
                     })
                 // }

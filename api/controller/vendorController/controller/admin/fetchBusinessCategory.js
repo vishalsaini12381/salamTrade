@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 var fetchBusinessCategory = ((req,res)=>{
     try{
-        business.find({}).then((doc)=>{
+        business.find({status:true}).then((doc)=>{
             if(doc) {
                 return res.json ({status : true , message : '' , doc});
             }else {

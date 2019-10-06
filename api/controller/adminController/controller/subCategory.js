@@ -79,7 +79,7 @@ var updateSubCategory = ((req,res)=>{
 
         let id = req.params.id;
 
-        subCategory.findByIdAndUpdate(id , {$set:{Subcategory : req.body.Subcategory}})
+        subCategory.findByIdAndUpdate(id , {$set:{subcategory : req.body.Subcategory}})
         .then((user)=>{
             // console.log('userserserses,',user);
             if(user){

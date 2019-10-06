@@ -82,7 +82,7 @@ var updateBusinessCategory = ((req,res)=>{
         let id = req.params.id;     
 
         // console.log('jjjjjjj', id);
-        business.findByIdAndUpdate(id,{$set : {businesscategory : req.body.businesscategory, status: true}})
+        business.findByIdAndUpdate(id,{$set : {businesscategory : req.body.businesscategory, status: req.body.status}})
         .then((user)=>{
             // console.log('333333333333333333333',user);
             if(user){
